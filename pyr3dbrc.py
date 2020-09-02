@@ -67,7 +67,7 @@ def extract_zip(inzip, date):
         file = get_zipfile_name(namelist, date)
         zid.extract(file, path=UNZIPPATH)
 
-    grfile = os.path.join(path, file)
+    grfile = os.path.join(UNZIPPATH, file)
 
     return grfile
 
