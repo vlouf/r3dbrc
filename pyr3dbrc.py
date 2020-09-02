@@ -125,14 +125,18 @@ def main():
     for z, d in zip(zips, date):
         files.append(extract_zip(z, d))
 
-    with open(os.path.join(OUTPATH, "r3dbrc"), "w+") as fid:
+    datestr = date[1].strftime("%Y%m%d_%H%M")
+    with open(os.path.join(OUTPATH, ".r3dbrc"), "w+") as fid:
+        fid.write("/home/548/ajp548/3DWIND_WITH_DVAD/dout/\n")
+        fid.write("/home/548/ajp548/3DWIND_WITH_DVAD/r3d_main.init\n")
         fid.write("\n".join(files))
+        fid.write(f"\n/g/data/kl02/ajp548/3DWIND/CPOL_BERR_3dwind_{datestr}.nc")
 
     return None
 
 
 if __name__ == "__main__":
-    parser_description = "Generate the r3dbrc file for 3D Winds."
+    parser_description = "Generate the .r3dbrc file for 3D Winds."
     parser = argparse.ArgumentParser(description=parser_description)
     parser.add_argument("-r", "--rid", dest="rid", type=int, help="Radar Rapic ID", default=64)
     parser.add_argument(
