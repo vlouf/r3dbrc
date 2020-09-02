@@ -11,7 +11,7 @@ import numpy as np
 import pandas as pd
 
 
-def get_radar_archive_file(date, rid):
+def get_radar_archive_file(date, rid: str) -> str:
     """
     Return the archive containing the radar file for a given radar ID and a
     given date.
@@ -20,6 +20,9 @@ def get_radar_archive_file(date, rid):
     ===========
     date: datetime
         Date.
+    rid: str
+        Radar RAPIC ID.
+
     Returns:
     ========
     file: str
@@ -32,12 +35,11 @@ def get_radar_archive_file(date, rid):
     file = f"/g/data/rq0/admin/level_1b/grid_150km/{rid}/{date.year}/{rid}_{datestr}_level1b_grid_150km.zip"
     if not os.path.exists(file):
         raise FileNotFoundError(f"{file} does not exist for radar {rid}.")
-        return None
 
     return file
 
 
-def extract_zip(inzip, date):
+def extract_zip(inzip: str, date) -> str:
     """
     Extract file in a daily archive zipfile for a specific datetime.
 
@@ -47,14 +49,12 @@ def extract_zip(inzip, date):
         Input zipfile
     date: pd.Timestamp
         Which datetime we want to extract.
-    path: str
-        Path where we want to temporarly store the output file.
+
     Returns:
     ========
     grfile: str
         Output ground radar file.
     """
-
     def get_zipfile_name(namelist, date):
         datestr = [re.findall("[0-9]{8}_[0-9]{6}", n)[0] for n in namelist]
         timestamps = np.array([datetime.datetime.strptime(dt, "%Y%m%d_%H%M%S") for dt in datestr], dtype="datetime64")
@@ -72,7 +72,20 @@ def extract_zip(inzip, date):
     return grfile
 
 
-def get_cpol_file(date):
+def get_cpol_file(date) -> str:
+    """
+    Find the CPOL gridded data for given date.
+
+    Parameters:
+    ===========
+    date: datetime
+        Date.    
+
+    Returns:
+    ========
+    file: str
+        CPOL file for the given date if it exists.
+    """
     datestr = date.strftime("%Y%m%d")
     path = f"/scratch/kl02/vhl548/cpol_level_1b/v2020/gridded/grid_150km_1000m/{date.year}/{datestr}/*.nc"
     namelist = sorted(glob.glob(path))
@@ -96,7 +109,7 @@ def main():
     for z, d in zip(zips, date):
         files.append(extract_zip(z, d))
 
-    with open(os.path.join("r3dbrc"), "w+") as fid:
+    with open(os.path.join(OUTPATH, "r3dbrc"), "w+") as fid:
         fid.write("\n".join(files))
 
     return None
@@ -122,7 +135,10 @@ if __name__ == "__main__":
         "-d", "--date", dest="date", type=str, help="Datetime format: 201703041210 or 2017-03-04T12:10", required=True
     )
     args = parser.parse_args()
-    INDATE = pd.Timestamp(args.date)
+    try:
+        INDATE = pd.Timestamp(args.date)
+    except Exception:
+        raise ValueError("Input date not understood.")
     OUTPATH = args.outdir
     UNZIPPATH = args.unzip
     RID = args.rid
