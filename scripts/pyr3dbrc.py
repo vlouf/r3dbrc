@@ -127,7 +127,7 @@ def main():
     date = [INDATE]
     date.append(date[0] + pd.Timedelta("10Min"))
     files = [get_cpol_file(d) for d in date]
-    zips = [get_radar_archive_file(d, 64) for d in date]
+    zips = [get_radar_archive_file(d, RID) for d in date]
 
     for z, d in zip(zips, date):
         files.append(extract_zip(z, d))
@@ -145,7 +145,7 @@ def main():
 if __name__ == "__main__":
     parser_description = "Generate the .r3dbrc file for 3D Winds."
     parser = argparse.ArgumentParser(description=parser_description)
-    parser.add_argument("-r", "--rid", dest="rid", type=int, help="Radar Rapic ID", default=64)
+    parser.add_argument("-r", "--rid", dest="rid", type=int, help="Radar Rapic ID", default=63)
     parser.add_argument(
         "-o", "--output", dest="outdir", type=str, help="Output directory.", default=os.curdir,
     )
