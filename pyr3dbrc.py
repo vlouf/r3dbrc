@@ -75,6 +75,10 @@ def extract_zip(inzip: str, date) -> str:
         datestr = [re.findall("[0-9]{8}_[0-9]{6}", n)[0] for n in namelist]
         timestamps = np.array([datetime.datetime.strptime(dt, "%Y%m%d_%H%M%S") for dt in datestr], dtype="datetime64")
         pos = np.argmin(np.abs(timestamps - date.to_numpy()))
+        delta = np.abs(pd.Timestamp(timestamps[pos]) - date).seconds        
+        if delta > 600:
+            print(f"Timedelta is {delta}s.")
+            raise FileNotFoundError("Timedelta > 600 seconds between files that are supposed to be at the same time.")
         grfile = namelist[pos]
         return grfile
 
@@ -111,6 +115,9 @@ def get_cpol_file(date) -> str:
     datelist = [re.findall("[0-9]{8}.[0-9]{6}", n)[0] for n in namelist]
     timestamps = np.array([datetime.datetime.strptime(dt, "%Y%m%d.%H%M%S") for dt in datelist], dtype="datetime64")
     pos = np.argmin(np.abs(timestamps - date.to_numpy()))
+    delta = np.abs(pd.Timestamp(timestamps[pos]) - date).seconds
+    if delta > 600:
+        raise FileNotFoundError("Timedelta > 600 seconds for given date time.")
     grfile = namelist[pos]
 
     return grfile
