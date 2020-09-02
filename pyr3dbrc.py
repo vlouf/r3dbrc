@@ -1,5 +1,21 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
+"""
+Script for finding the consecutive CPOL and Berrimah files at a given date.
+
+@title: pyr3dbrc.py
+@author: Valentin Louf <valentin.louf@bom.gov.au>
+@institutions: Australian Bureau of Meteorology
+@date: 02/09/2020
+
+.. autosummary::
+    :toctree: generated/
+
+    get_radar_archive_file
+    extract_zip
+    get_cpol_file
+    main
+"""
 import os
 import re
 import glob
@@ -79,7 +95,7 @@ def get_cpol_file(date) -> str:
     Parameters:
     ===========
     date: datetime
-        Date.    
+        Date.
 
     Returns:
     ========
@@ -130,10 +146,10 @@ if __name__ == "__main__":
         help="Unzipping temporary directory (files won't be deleted!).",
         default=os.curdir,
     )
-
     parser.add_argument(
         "-d", "--date", dest="date", type=str, help="Datetime format: 201703041210 or 2017-03-04T12:10", required=True
     )
+
     args = parser.parse_args()
     try:
         INDATE = pd.Timestamp(args.date)
