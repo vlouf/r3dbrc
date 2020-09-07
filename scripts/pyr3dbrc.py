@@ -132,7 +132,7 @@ def main():
     for z, d in zip(zips, date):
         files.append(extract_zip(z, d))
 
-    datestr = date[1].strftime("%Y%m%d_%H%M")
+    datestr = re.findall("[0-9]{8}_[0-9]{6}", files[-1])[0]
     with open(os.path.join(OUTPATH, ".r3dbrc"), "w+") as fid:
         fid.write("/home/548/ajp548/3DWIND_WITH_DVAD/dout/\n")
         fid.write("/home/548/ajp548/3DWIND_WITH_DVAD/r3d_main.init\n")
