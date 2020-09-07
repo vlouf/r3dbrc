@@ -137,9 +137,6 @@ dmypy.json
 *.png
  scripts/*ipynb
 
-# OPOL related stuff
-*opol*
-
 # Data directories
 test/
 notebooks/*/
